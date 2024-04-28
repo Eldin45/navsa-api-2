@@ -1,0 +1,446 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model admins{
+  admin_id Int @id @default(autoincrement())
+  dashboard cooperate_account[]
+  farmers farmers_data[]
+  suppliers input_supplier[]
+  wallet admin_wallet? 
+  admin_name String
+  organisation String
+  admin_email String @unique
+  admin_phone String 
+  previllage String
+  privateKey String @default("weduyewiueruyeiye")
+  publicKey String @default("ireuuyrfweuikihkld")
+  hash String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model admin_wallet{
+  wallet_id Int @id @default(autoincrement())
+  adminD admins@relation(fields: [adminId], references: [admin_id])
+  adminId Int @unique
+  customerId String @unique
+  requestId String
+  accountId String
+  accountName String
+  bank_code String  
+  crm_code String  ?
+  funnd_status Int?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+model cooperate_account{
+  cooperate_id Int @id @default(autoincrement())
+  admin admins @relation(fields: [dashId], references: [admin_id])
+  dashId Int  
+  rep_fullname String
+  rep_phone String
+  cooperate_name String
+  cooperate_email String  @unique
+  cooperate_agent cooperate_agent[]
+  farmers_data farmers_data[]
+  suppliers input_supplier[]
+  famers_wallets farmers_wallet[]
+   farms farms[]
+  wallet cooperate_wallet?
+  previllage String
+  privateKey String
+  publicKey String
+  hash String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model cooperate_wallet{
+  wallet_id Int @id @default(autoincrement())
+  cooperate  cooperate_account @relation(fields: [cooperateId], references: [cooperate_id])
+  cooperateId Int @unique
+  customerId String 
+  requestId String
+  account_name String
+  accountId String
+  bank_code String  
+  status Int @default(1)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model cooperate_agent{
+  agent_id Int @id @default(autoincrement())
+  agent_fullname String
+  agent_phone String @unique
+  agent_email String  @unique
+  cooperateId  cooperate_account @relation(fields: [cooperate], references: [cooperate_id])
+  cooperate Int
+  farmer farmers_data[]
+  privateKey String
+
+  hash String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+
+// model active_farmers{
+//   farmer_id Int @id @default(autoincrement())
+//   cooperateId  cooperate_account @relation(fields: [f_cooperate], references: [cooperate_id])
+//   f_cooperate Int
+//   agents  cooperate_agent @relation(fields: [agentId], references: [agent_id])
+//   agentId Int
+//   farms farms[]
+//   surname String
+//   firstname String
+//   other_name String
+//   f_email String @unique
+//   f_phone String @unique
+//   f_gendar String
+//   f_dob String
+//   f_image String?
+//   epInputs eopInput_request[]
+//   f_qualification String
+//   wallet farmers_wallet?
+//   zones  zone @relation(fields: [zoneId], references: [zone_id])
+//   zoneId Int
+//   state  states @relation(fields: [stateId], references: [state_id])
+//   stateId Int
+
+//   hash String
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+
+// }
+
+
+model farmers_data{
+  farmer_id Int @id @default(autoincrement())
+  cooperateId  cooperate_account @relation(fields: [f_cooperate], references: [cooperate_id])
+  f_cooperate Int
+
+   dash  admins @relation(fields: [dashId], references: [admin_id])
+   dashId Int @default(1)
+  agents  cooperate_agent @relation(fields: [agentId], references: [agent_id])
+  agentId Int
+  farms farms[]
+  surname String
+  firstname String
+  other_name String
+  f_email String @unique
+  f_phone String @unique
+  f_gendar String
+  f_dob String
+  f_image String?
+  epInputs eopInput_request[]
+  f_qualification String
+  wallet farmers_wallet?
+  zones  zone @relation(fields: [zoneId], references: [zone_id])
+  zoneId Int
+  state  states @relation(fields: [stateId], references: [state_id])
+  stateId Int
+
+  hash String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+}
+
+model farms{
+    farm_id Int @id @default(autoincrement())
+    farmerID  farmers_data @relation(fields: [farmerId], references: [farmer_id])
+    farmerId Int
+
+     cooperate  cooperate_account @relation(fields: [cooperat], references: [cooperate_id])
+     cooperat Int @default(1)
+
+    soil soil_types @relation(fields: [soilId], references: [soil_id])
+    soilId Int
+
+   farmT  farm_types @relation(fields: [farmT_id], references: [type_id])
+   farmT_id Int
+   enterprises  enterprise @relation(fields: [ents_id], references: [enterprise_id])
+   ents_id Int
+   size Decimal
+   allocated allocated_inputs[]
+    store farm_store[]
+   plan workplan[]
+   report reports[]
+  farm_name String 
+  farm_location String
+  latitude String?
+  longitude String? 
+  f_image String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+}
+
+model soil_types{
+  soil_id Int @id @default(autoincrement())
+  farms farms[]
+  soil_name String 
+  soil_description String 
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+
+model farm_types{
+  type_id Int @id @default(autoincrement())
+  farms farms[]
+  type_name String 
+   description String 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model enterprise{
+  enterprise_id Int @id @default(autoincrement())
+  farms farms[]
+  eop_inputs eop_inputs[]
+  enterprise_name String
+  description String 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model zone{
+  zone_id Int @id @default(autoincrement())
+  farmers_data farmers_data[]
+  zone String 
+  description String 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model states{
+  state_id Int @id @default(autoincrement())
+  farmers_data farmers_data[]
+  state_name String 
+   state_map String 
+    state_logo String 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+
+
+
+model farmers_wallet{
+  wallet_id Int @id @default(autoincrement())
+  farmerID  farmers_data @relation(fields: [farmerId], references: [farmer_id])
+  farmerId Int @unique
+
+  cooperateId  cooperate_account @relation(fields: [cooperate], references: [cooperate_id])
+  cooperate Int @default(1)
+  customerId String
+  requestId String
+  Account_name String
+  open_accountId String
+  close_accountId String
+  bank_code String  
+  crm_code String?
+  funnd_status Int?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+
+model input_supplier{
+  supplier_id Int @id @default(autoincrement())
+  cooperateId  cooperate_account @relation(fields: [cooperate], references: [cooperate_id])
+  cooperate Int
+   admin admins @relation(fields: [dashID], references: [admin_id])
+   dashID Int @default(1)  
+  rep_name String
+  rep_email String @unique
+  rep_phone String
+  company_name String
+  company_location String
+  company_address String
+  cac String
+  verification_pin String?
+  eop_input eop_inputs[]
+  request eopInput_request[]
+  settings supplier_settings[]
+  recover_pin String?
+  wallet suppliers_wallet?
+  approve_status Int?
+  hash String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+
+model suppliers_wallet{
+  wallet_id Int @id @default(autoincrement())
+  suppliers  input_supplier @relation(fields: [supplierId], references: [supplier_id])
+  supplierId Int @unique
+  customerId String
+  requestId String
+  account_name String
+  accountId String
+  bank_code String  
+  crm_code String  ?
+  funnd_status Int?
+  status Int @default(1)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model agro_inputs{
+  input_id Int @id @default(autoincrement())
+  input_name String @unique
+  input_unit String
+  quantity Int
+  eop eop_inputs[]
+  allocated allocated_inputs[]
+  store farm_store[]
+
+  price Decimal?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+model eop_inputs{
+  eopI_id Int @id @default(autoincrement())
+  inputs agro_inputs @relation(fields: [inputId], references: [input_id])
+  inputId Int
+  assigned_price Decimal
+  enterpris enterprise @relation(fields: [eop_id], references: [enterprise_id])
+  eop_id Int
+  supplier input_supplier @relation(fields: [supplierId], references: [supplier_id])
+  supplierId Int
+  activeStatus Int @default(0)
+  farmers eopInput_request[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+
+// model iv_inputs{
+//   ivinputs_id Int @id @default(autoincrement())
+//   product_name String
+//   product_unit String
+//   ivfarm farms[]
+//   allocated allocated_inputs[]
+//   quantity String
+//   price String
+//   eop_id String
+
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+// }
+
+model supplier_settings{
+  ivinputs_id Int @id @default(autoincrement())
+  supplier input_supplier @relation(fields: [supplierId], references: [supplier_id])
+  supplierId Int
+  transactionPin String
+  otpCode String @default("0000")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+
+
+
+model eopInput_request {
+  epRequest_id Int @id @default(autoincrement())
+ 
+  farmers farmers_data @relation(fields: [famersId], references: [farmer_id])
+  famersId Int
+  eopinputs eop_inputs @relation(fields: [eopInt_id], references: [eopI_id])
+  eopInt_id Int
+
+  input_supplier input_supplier @relation(fields: [supplier], references: [supplier_id])
+  supplier Int @default(1)
+
+
+  approve_status Int @default(0)
+  approve_token String?
+
+ 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
+}
+
+
+model allocated_inputs {
+  allocatedd_id Int @id @default(autoincrement())
+  ivfarm farms @relation(fields: [farmID], references: [farm_id])
+  farmID Int
+  inputs agro_inputs @relation(fields: [inputId], references: [input_id])
+  inputId Int
+  quantity Int
+  unit String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
+}
+
+model farm_store{
+  allocatedd_id Int @id @default(autoincrement())
+  farm farms @relation(fields: [farmID], references: [farm_id])
+  farmID Int
+  inputs agro_inputs @relation(fields: [inputId], references: [input_id])
+  inputId Int
+  quantity Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
+}
+
+
+model reports{
+  report_id Int @id @default(autoincrement())
+  farm  farms @relation(fields: [farmId], references: [farm_id])
+  farmId Int
+  title String
+  report_data String
+  status Int @default(1)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model workplan{
+  workplan_id Int @id @default(autoincrement())
+  farm  farms @relation(fields: [farmId], references: [farm_id])
+  farmId Int
+  plan String
+  plan_description String
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+
+model transactions{
+  transaction Int @id @default(autoincrement())
+  from_email String
+  to_email String 
+  transfer_reference String
+  from_accountId String 
+  to_accountId String
+  transaction_time String
+  response_message String
+  response_code String
+  transaction_type String
+  amount Decimal
+  naration String
+  toBankCode String
+  fromBankCode String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
