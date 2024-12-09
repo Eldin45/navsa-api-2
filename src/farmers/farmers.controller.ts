@@ -9,7 +9,7 @@ import { InputRequestDto } from './dto/eopInputRequestDto';
 import { NewWorkPlanDto } from './dto/workPlanDto';
 import { NewReportDto } from './dto/reportDto';
 
-@Controller('farmers')
+@Controller('farme')
 export class FarmersController {
   constructor(private farmerService: FarmersService) {}
 
