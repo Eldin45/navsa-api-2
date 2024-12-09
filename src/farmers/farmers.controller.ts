@@ -18,8 +18,8 @@ export class FarmersController {
     return this.farmerService.newFarmer(dto);
   }
 
-  @Post('/login/:apiKey')
-  farmerLog(@Body() dto: FarmersLogDto, @Param('apiKey') api: string) {
+  @Post('/login/:apiKey1')
+  farmerLog(@Body() dto: FarmersLogDto, @Param('apiKey1') api: string) {
     return this.farmerService.farmerLog(dto, api);
   }
 
