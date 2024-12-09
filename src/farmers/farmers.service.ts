@@ -104,7 +104,7 @@ export class FarmersService {
         },
       });
 
-      if (!checkData) throw new UnauthorizedException('Incorrect credentials');
+      if (!checkData) throw new UnauthorizedException('Icredentials');
 
       // const hashPass = await argon.hash(dto.hash);
       const email1 = checkData.f_email;
